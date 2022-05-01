@@ -25,7 +25,6 @@ TracyCZoneCtx :: ___tracy_c_zone_context;
 @(default_calling_convention="c")
 foreign tracy {
 	___tracy_set_thread_name                 :: proc ( name : cstring ) --- ;
-	___tracy_init_thread                     :: proc () --- ;
 	___tracy_alloc_srcloc                    :: proc ( line : u32, source : cstring, sourceSz : c.size_t, function : cstring, functionSz : c.size_t ) -> u64 --- ;
 	___tracy_alloc_srcloc_name               :: proc ( line : u32, source : cstring, sourceSz : c.size_t, function : cstring, functionSz : c.size_t, name : cstring, nameSz : c.size_t ) -> u64 --- ;
 	___tracy_emit_zone_begin                 :: proc ( srcloc : ^___tracy_source_location_data, active : c.int ) -> TracyCZoneCtx --- ;
@@ -51,4 +50,7 @@ foreign tracy {
 	___tracy_emit_frame_image                :: proc ( image : cstring, w : u16, h : u16, offset : u8, flip : c.int ) --- ;
 	___tracy_emit_plot                       :: proc ( name : cstring, val : f64 ) --- ;
 	___tracy_emit_message_appinfo            :: proc ( txt : cstring, size : c.size_t ) --- ;
+
+	___tracy_fiber_enter					 :: proc ( name : cstring ) --- ;
+	___tracy_fiber_leave					 :: proc () --- ;
 }

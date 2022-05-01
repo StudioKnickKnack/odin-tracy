@@ -55,15 +55,6 @@ ZoneEnd :: proc (ctx : ZoneCtx) {
 
 ZoneBegin :: proc (loc := #caller_location) -> (ctx: ZoneCtx) {
 	when Enabled {
-		/* From manual, page 40:
-		     Before the ___tracy_alloc_* functions are called on a non-main thread for the
-		     first time, care should be taken to ensure that ___tracy_init_thread has been
-		     called first. The ___tracy_init_thread function initializes per-thread
-		     structures Tracy uses and can be safely called multiple times.
-		*/
-		// NOTE(Oskar): We could do @thread_local here and avoid the function call. But probably not worth the trouble?
-		___tracy_init_thread();
-
 		/* From manual, page 41:
 		     The variable representing an allocated source location is of an opaque type.
 		     After it is passed to one of the zone begin functions, its value cannot be
@@ -76,6 +67,18 @@ ZoneBegin :: proc (loc := #caller_location) -> (ctx: ZoneCtx) {
 	}
 	return;
 };
+
+FiberEnter :: #force_inline proc (name : cstring) {
+	when Enabled {
+		___tracy_fiber_enter(name);
+	}
+}
+
+FiberLeave :: #force_inline proc () {
+	when Enabled {
+		___tracy_fiber_leave();
+	}
+}
 
 // Important: String passed to FrameMarkStart must be pooled (interned) and
 // identical to the one passed to FrameMarkEnd.  Odin's string literals
